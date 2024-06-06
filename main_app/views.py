@@ -6,6 +6,7 @@ from .forms import FeedingForm
 from django.contrib.auth.views import LoginView
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.decorators import login_required
 
 
 # Create your views here.
@@ -15,10 +16,12 @@ class Home(LoginView):
 def about(request):
   return render(request, 'about.html')
 
+@login_required
 def dog_index(request):
   dogs = Dog.objects.filter(user=request.user)
   return render(request, 'dogs/index.html', { 'dogs': dogs })
 
+@login_required
 def dog_detail(request, dog_id):
   dog = Dog.objects.get(id=dog_id)
   toys_dog_doesnt_have = Toy.objects.exclude(id__in = dog.toys.all().values_list('id'))
@@ -44,6 +47,7 @@ class DogDelete(DeleteView):
   model = Dog
   success_url = '/dogs/'
 
+@login_required
 def add_feeding(request, dog_id):
   form = FeedingForm(request.POST)
   if form.is_valid():
@@ -70,6 +74,7 @@ class ToyDelete(DeleteView):
   model = Toy
   success_url = '/toys/'  
 
+@login_required
 def assoc_toy(request, dog_id, toy_id):
   Dog.objects.get(id=dog_id).toys.add(toy_id)
   return redirect('dog-detail', dog_id=dog_id) 
