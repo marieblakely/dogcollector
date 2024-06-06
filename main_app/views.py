@@ -63,3 +63,7 @@ class ToyUpdate(UpdateView):
 class ToyDelete(DeleteView):
   model = Toy
   success_url = '/toys/'  
+
+def assoc_toy(request, dog_id, toy_id):
+  Dog.objects.get(id=dog_id).toys.add(toy_id)
+  return redirect('dog-detail', dog_id=dog_id) 
