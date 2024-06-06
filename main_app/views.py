@@ -4,6 +4,8 @@ from django.views.generic import ListView, DetailView
 from .models import Dog, Toy
 from .forms import FeedingForm
 from django.contrib.auth.views import LoginView
+from django.contrib.auth import login
+from django.contrib.auth.forms import UserCreationForm
 
 
 # Create your views here.
@@ -71,3 +73,17 @@ class ToyDelete(DeleteView):
 def assoc_toy(request, dog_id, toy_id):
   Dog.objects.get(id=dog_id).toys.add(toy_id)
   return redirect('dog-detail', dog_id=dog_id) 
+
+def signup(request):
+  error_message = ''
+  if request.method == 'POST':
+    form = UserCreationForm(request.POST)
+    if form.is_valid():
+      user = form.save()
+      login(request, user)
+      return redirect('dog-index')
+    else:
+      error_message = 'Invalid sign up - try again'
+  form = UserCreationForm()
+  context = {'form': form, 'error_message': error_message}
+  return render(request, 'signup.html', context)
