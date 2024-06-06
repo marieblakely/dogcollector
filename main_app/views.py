@@ -20,7 +20,9 @@ def dog_detail(request, dog_id):
   dog = Dog.objects.get(id=dog_id)
   feeding_form = FeedingForm()
   return render(request, 'dogs/detail.html', {
-    'dog': dog, 'feeding_form': feeding_form
+    'dog': dog, 
+    'feeding_form': feeding_form, 
+    'toys': toys_dog_doesn't_have
   })
 
 class DogCreate(CreateView):
